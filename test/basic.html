@@ -49,18 +49,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         });
         rain.start();
       });
-
-      test('it can rain because active changed', function(done) {
-        var rain = fixture('basic');
-        expect(rain.active).to.be.eql(false);
-
-        rain.addEventListener('emoji-rain-start', function() {
-          expect(rain.active).to.be.eql(true);
-          done();
-        });
-        rain.active = true;
-      });
-
+      
       test('it can stop raining', function(done) {
         var rain = fixture('basic');
         rain.addEventListener('emoji-rain-start', function() {
@@ -72,20 +61,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           done();
         });
         rain.start();
-      });
-
-      test('it can stop raining because active changed', function(done) {
-        var rain = fixture('basic');
-        expect(rain.active).to.be.eql(false);
-        rain.addEventListener('emoji-rain-start', function() {
-          expect(rain.active).to.be.eql(true);
-          rain.active = false;
-        });
-        rain.addEventListener('emoji-rain-stop', function() {
-          expect(rain.active).to.be.eql(false);
-          done();
-        });
-        rain.active = true;
       });
     });
 

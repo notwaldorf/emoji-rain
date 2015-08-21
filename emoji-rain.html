@@ -92,8 +92,7 @@ want to eat the performance cost, you don't have to:
          */
         active: {
           type: Boolean,
-          value: false,
-          observer: '_activeChanged'
+          value: false
         },
 
         /**
@@ -186,18 +185,6 @@ want to eat the performance cost, you don't have to:
         }, function(e) {
           this.useTwemoji = false;
         });
-      },
-
-      /**
-       * Called when the rain is manually enabled or disabled.
-       */
-      _activeChanged: function(active, old) {
-        if (active == this.old && old === undefined)
-          return;
-        if (active)
-          this.start();
-        else if (old == true)
-          this.stop();
       },
 
       /**
