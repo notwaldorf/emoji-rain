@@ -10,6 +10,27 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 <link rel="import" href="../polymer/polymer.html">
 
+<!--
+`<emoji-rain>` is a Polymer element that makes it rain emoji on any page. Because it can.
+
+The number of drops is configurable (by default it's set to 250). The `active`
+attribute determines whether the emoji are raining, but you can also manually
+`start()` and `stop()` the rain.
+
+Example:
+
+  <emoji-rain drops="100" active></emoji-rain>
+
+Optionally, you can also use the Twitter emoji instead of the native ones.
+`twemoji.js` and all its images will only be loaded on demand, so if you don't
+want to eat the performance cost, you don't have to:
+
+  <emoji-rain use-twemoji></emoji-rain>
+
+@element emoji-rain
+@demo index.html
+-->
+
 <dom-module id="emoji-rain">
   <style>
     :host {
@@ -25,32 +46,56 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   </template>
 
   <script>
-
     Polymer({
+      /**
+       * Fired when the emoji rain starts.
+       *
+       * @event emoji-rain-start
+       */
+
+      /**
+       * Fired when the emoji rain stops.
+       *
+       * @event emoji-rain-stop
+       */
 
       is: 'emoji-rain',
 
       properties: {
+        /**
+         * The number of emoji that is raining.
+         */
         drops: {
           type: Number,
           value: 250
         },
 
+        /**
+         * If true, will display the Twitter emoji images instead of the
+         * native emoji font. The first time `useTwemoji` is enabled, it will
+         * load the `twemoji.js` script and the necessary images.
+         */
         useTwemoji: {
           type: Boolean,
           value: false,
           observer: '_twemojiChanged'
         },
 
+        /**
+         * If true, it is currently raining.
+         */
         active: {
           type: Boolean,
           value: false
         },
 
+        /**
+         * Handlers and identity are hard.
+         */
         _boundAnimate: {
           type: Function,
           value: function() {
-            return this.animate.bind(this);
+            return this._animate.bind(this);
           }
         }
       },
@@ -87,6 +132,31 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           this.start();
       },
 
+      /**
+       * Starts the rain.
+       */
+      stop: function() {
+        this.active = false;
+        clearTimeout(this.timeout);
+        window.cancelAnimationFrame(this.animationFrame);
+        this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        this.fire('emoji-rain-stop');
+      },
+
+      /**
+       * Stops the rain.
+       */
+      start: function() {
+        this.active = true;
+        this._animate();
+        this.fire('emoji-rain-start');
+      },
+
+      /**
+       * Called when twemoji is enabled or disabled. If this is the first
+       * time it is enabled, performs an async script load and upon success
+       * resets the rain.
+       */
       _twemojiChanged: function() {
         if (!this.useTwemoji)
           return;
@@ -110,31 +180,54 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         });
       },
 
-      stop: function() {
-        this.active = false;
-        clearTimeout(this.timeout);
-        window.cancelAnimationFrame(this.animationFrame);
-        this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
-      },
-
-      start: function() {
-        this.active = true;
-        this.animate();
-      },
-
-      animate: function() {
+      /**
+       * Rains
+       */
+      _animate: function() {
         var self = this;
         this.timeout = setTimeout(function() {
           self.animationFrame = window.requestAnimationFrame(self._boundAnimate);
           self.context.clearRect(0, 0, self.canvas.width, self.canvas.height);
 
           for (var i = 0; i < self.dropsForDrawing.length; i++) {
-            self.paintEmoji(self.dropsForDrawing[i]);
+            self._paintEmoji(self.dropsForDrawing[i]);
           }
         }, 1000 / 60);
       },
 
-      paintEmoji: function(emoji) {
+      /**
+       * Gets you an obscure ready-to-be-used emoji object with a whole bunch of
+       * undocumented properties because your faithful author was too lazy
+       * to create a separate class for this. Leaving it public just in case
+       * you want to use this (why do you?) <3
+       */
+      giveMeARandomEmoji: function() {
+        var emoji = {}
+
+        emoji.code = this._emoji[Math.floor((Math.random() * this._totalEmoji))];
+        emoji.char = this._fromCodePoint(emoji.code);
+
+        // 1 to window size
+        emoji.x = Math.floor((Math.random() * this.canvas.width) + 1);
+        emoji.y = Math.floor((Math.random() * this.canvas.height) + 1);
+
+        if (this.useTwemoji && this.importedTwemoji) {
+          this._imageTransmogrifier.innerHTML = twemoji.parse(emoji.char);
+          emoji.img = this._imageTransmogrifier.childNodes[0];
+        }
+
+        // I am pulling these numbers out of a hat.
+        emoji.speed = Math.floor(Math.random() * 10 + 1);
+        emoji.opacity = 1;
+        emoji.opacitySpeed = 0.02 * (Math.random() * 2 + 1);
+
+        return emoji;
+      },
+
+      /**
+       * Draws one emoji (text or twemoji) on the canvas.
+       */
+      _paintEmoji: function(emoji) {
         if (emoji.y >= canvas.height || emoji.opacity < 0.1) {
           var i = emoji.arrayIndex;
           emoji = this.giveMeARandomEmoji();
@@ -160,29 +253,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         this.context.restore();
       },
 
-      giveMeARandomEmoji: function() {
-        var emoji = {}
-
-        emoji.code = this._emoji[Math.floor((Math.random() * this._totalEmoji))];
-        emoji.char = this._fromCodePoint(emoji.code);
-
-        // 1 to window size
-        emoji.x = Math.floor((Math.random() * this.canvas.width) + 1);
-        emoji.y = Math.floor((Math.random() * this.canvas.height) + 1);
-
-        if (this.useTwemoji && this.importedTwemoji) {
-          this._imageTransmogrifier.innerHTML = twemoji.parse(emoji.char);
-          emoji.img = this._imageTransmogrifier.childNodes[0];
-        }
-
-        // I am pulling these numbers out of a hat.
-        emoji.speed = Math.floor(Math.random() * 10 + 1);
-        emoji.opacity = 1;
-        emoji.opacitySpeed = 0.02 * (Math.random() * 2 + 1);
-
-        return emoji;
-      },
-
       /**
        * Create a set of emoji drops.
        */
@@ -195,14 +265,20 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         }
       },
 
+      /**
+       * Hopefully updates the canvas size when the window resizes.
+       */
       _resizeWindow: function() {
         this.canvas.width = window.innerWidth;
         this.canvas.height = window.innerHeight;
       },
 
-      // From http://www.html5rocks.com/en/tutorials/canvas/hidpi/
+      /**
+       * Unborks the canvas pixel ratio on retina screens.
+       * From http://www.html5rocks.com/en/tutorials/canvas/hidpi/
+       */
       _scaleCanvas: function() {
-        // finally query the various pixel ratios
+        // Finally query the various pixel ratios.
         var devicePixelRatio = window.devicePixelRatio || 1;
         var backingStoreRatio = this.context.webkitBackingStorePixelRatio ||
                             this.context.mozBackingStorePixelRatio ||
@@ -212,7 +288,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         var ratio = devicePixelRatio / backingStoreRatio;
 
-        // upscale the canvas if the two ratios don't match
+        // Upscale the canvas if the two ratios don't match.
         if (devicePixelRatio !== backingStoreRatio) {
 
             var oldWidth = this.canvas.width;
@@ -224,16 +300,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             this.canvas.style.width = oldWidth + 'px';
             this.canvas.style.height = oldHeight + 'px';
 
-            // now scale the context to counter
-            // the fact that we've manually scaled
-            // our canvas element
+            // Now scale the context to counter the fact that we've manually scaled
+            // our canvas element.
             this.context.scale(ratio, ratio);
-
         }
       },
 
-      // From https://github.com/twitter/twemoji, so that we don't
-      // have to load twemoji unless it's being displayed.
+      /**
+       * I don't understand how to save unicode in an array and use it in a
+       * canvas, and I quickly gave up trying. This is lifted from https://github.com/twitter/twemoji
+       * and returns the emoji for a codepoint.
+       */
       _fromCodePoint: function(codepoint) {
         var code = typeof codepoint === 'string' ?
               parseInt(codepoint, 16) : codepoint;
@@ -249,5 +326,4 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     });
 
   </script>
-
 </dom-module>
