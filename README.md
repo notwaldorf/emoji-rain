@@ -24,7 +24,7 @@ want to eat the performance cost, you don't have to:
 Install with bower:
 ```
 mkdir emoji-rain-demo && cd emoji-rain-demo
-bower install notwaldorf/emoji-rain
+bower install emoji-rain
 ```
 Drop it in a page, next to the newly created `bower_components` folder:
 ```html
