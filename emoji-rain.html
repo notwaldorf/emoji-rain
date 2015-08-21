@@ -59,6 +59,12 @@ want to eat the performance cost, you don't have to:
        * @event emoji-rain-stop
        */
 
+       /**
+        * Fired when twemoji.js has been loaded and can be used.
+        *
+        * @event emoji-rain-twemoji-ready
+        */
+
       is: 'emoji-rain',
 
       properties: {
@@ -86,7 +92,8 @@ want to eat the performance cost, you don't have to:
          */
         active: {
           type: Boolean,
-          value: false
+          value: false,
+          observer: '_activeChanged'
         },
 
         /**
@@ -168,6 +175,7 @@ want to eat the performance cost, you don't have to:
 
         this.importHref(this.resolveUrl('twemoji-script-holder.html'), function(e) {
           this.importedTwemoji = true;
+          this.fire('emoji-rain-twemoji-ready');
 
           // Poetically, the rain must fall on.
           var prevActive = this.active;
@@ -178,6 +186,18 @@ want to eat the performance cost, you don't have to:
         }, function(e) {
           this.useTwemoji = false;
         });
+      },
+
+      /**
+       * Called when the rain is manually enabled or disabled.
+       */
+      _activeChanged: function(active, old) {
+        if (active == this.old && old === undefined)
+          return;
+        if (active)
+          this.start();
+        else if (old == true)
+          this.stop();
       },
 
       /**
@@ -228,7 +248,7 @@ want to eat the performance cost, you don't have to:
        * Draws one emoji (text or twemoji) on the canvas.
        */
       _paintEmoji: function(emoji) {
-        if (emoji.y >= canvas.height || emoji.opacity < 0.1) {
+        if (emoji.y >= this.canvas.height || emoji.opacity < 0.1) {
           var i = emoji.arrayIndex;
           emoji = this.giveMeARandomEmoji();
           emoji.arrayIndex = i;
