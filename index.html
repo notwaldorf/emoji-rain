@@ -22,6 +22,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 </head>
 <body>
   <emoji-rain id="rainmaker"></emoji-rain>
+  <emoji-rain id="twemoji-rainmaker" use-twemoji></emoji-rain>
 
   <div class="container">
     <section>
@@ -32,7 +33,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     </section>
 
     <section>
-      <button onclick="toggle(this)">Make it rain!</button>
+      <button onclick="rain(this)">Make it rain!</button>
+      <br>or<br>
+      <button onclick="twemojiRain(this)">Make it rain twitter emoji!</button>
     </section>
 
     <div id="footer">
@@ -122,8 +125,12 @@ background: #F4FF81;
 }
 </style>
 <script>
-function toggle(button) {
-  var rainmaker = document.getElementById('rainmaker');
+var rainmaker = document.getElementById('rainmaker');
+var twemojiRainmaker = document.getElementById('twemoji-rainmaker');
+
+function rain(button) {
+  twemojiRainmaker.stop();
+
   if (rainmaker.active) {
     rainmaker.stop();
     button.innerHTML = "Make it rain!";
@@ -132,5 +139,18 @@ function toggle(button) {
     button.innerHTML = "OMG stop the rain!";
   }
 }
+
+function twemojiRain(button) {
+  rainmaker.stop();
+
+  if (twemojiRainmaker.active) {
+    twemojiRainmaker.stop();
+    button.innerHTML = "Make it rain twemoji!";
+  } else {
+    twemojiRainmaker.start();
+    button.innerHTML = "Twemoji stop!!";
+  }
+}
+
 </script>
 </html>

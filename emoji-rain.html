@@ -67,6 +67,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         this.canvas = this.$.canvas;
         this.context = this.canvas.getContext('2d');
+        this.context.fillStyle = 'black';
+
         this.resizeWindow();
         this._scaleCanvas();
 
@@ -120,22 +122,18 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           emoji.opacity -= emoji.opacitySpeed;
         }
 
-        // Mess with the font size a bit. Not too much because it slows down drawing.
-        if (emoji.arrayIndex % 2)
-          this.context.font = '20px serif';
-        else
-          this.context.font = '30px serif';
+        this.context.globalAlpha = emoji.opacity;
 
-        this.context.fillStyle = 'rgba(0,0,0, ' + emoji.opacity + ')';
-       if (this.useTwemoji && emoji.img != "") {
-         try {
-           this.context.drawImage(emoji.img, emoji.x, emoji.y)
-         } catch (e) {
-           debugger
-           this.context.fillText(emoji.char, emoji.x, emoji.y);
-         }
-       } else
+        var isEven = emoji.arrayIndex % 2;
+        if (this.useTwemoji && emoji.img != "") {
+          var size = isEven ? 20 : 30;
+          this.context.drawImage(emoji.img, emoji.x, emoji.y, size, size);
+        } else {
+          this.context.font = isEven ? '20px serif' : '30px serif';
           this.context.fillText(emoji.char, emoji.x, emoji.y);
+        }
+        
+        this.context.restore();
       },
 
       resizeWindow: function() {
@@ -159,7 +157,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         // I am pulling these numbers out of a hat.
         emoji.speed = Math.floor(Math.random() * 10 + 1);
         emoji.opacity = 1;
-        emoji.opacitySpeed = 0.02 * (Math.random() * 4 + 1);
+        emoji.opacitySpeed = 0.02 * (Math.random() * 2 + 1);
 
         return emoji;
       },
