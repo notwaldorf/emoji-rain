@@ -9,7 +9,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 -->
 
 <link rel="import" href="../polymer/polymer.html">
-<script src="https://twemoji.maxcdn.com/twemoji.min.js"></script>
 
 <dom-module id="emoji-rain">
   <style>
@@ -39,7 +38,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         useTwemoji: {
           type: Boolean,
-          value: false
+          value: false,
+          observer: '_twemojiChanged'
         },
 
         active: {
@@ -55,7 +55,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         }
       },
 
-      attached: function() {
+      ready: function() {
         this.dropsForDrawing = [];
 
         // From http://www.unicode.org/Public/UNIDATA/EmojiSources.txt
@@ -69,22 +69,45 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         this.context = this.canvas.getContext('2d');
         this.context.fillStyle = 'black';
 
-        this.resizeWindow();
+        this._resizeWindow();
         this._scaleCanvas();
 
+        // Care about window resizing.
         var self = this;
         window.addEventListener('resize', function() {
-          self.resizeWindow();
+          self._resizeWindow();
         }, false);
 
-        for (var i = 0; i < this.drops; i++) {
-          var emoji = this.giveMeARandomEmoji();
-          emoji.arrayIndex = i;
-          this.dropsForDrawing.push(emoji);
-        }
+        // If we're using twemoji right off the bat, wait until the script
+        // loads before generating the drops, and it will generate the drops.
+        if (!this.useTwemoji)
+          this._generateDrops();
 
         if (this.active)
           this.start();
+      },
+
+      _twemojiChanged: function() {
+        if (!this.useTwemoji)
+          return;
+
+        // We only want to load the script if we really need it, because
+        // it needs to download a bunch of images, and that's a waste.
+        if (this.importedTwemoji)
+          return;
+
+        this.importHref(this.resolveUrl('twemoji-script-holder.html'), function(e) {
+          this.importedTwemoji = true;
+
+          // Poetically, the rain must fall on.
+          var prevActive = this.active;
+          this.stop();
+          this._generateDrops();
+          if (prevActive)
+            this.start()
+        }, function(e) {
+          this.useTwemoji = false;
+        });
       },
 
       stop: function() {
@@ -104,6 +127,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         this.timeout = setTimeout(function() {
           self.animationFrame = window.requestAnimationFrame(self._boundAnimate);
           self.context.clearRect(0, 0, self.canvas.width, self.canvas.height);
+
           for (var i = 0; i < self.dropsForDrawing.length; i++) {
             self.paintEmoji(self.dropsForDrawing[i]);
           }
@@ -125,7 +149,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         this.context.globalAlpha = emoji.opacity;
 
         var isEven = emoji.arrayIndex % 2;
-        if (this.useTwemoji && emoji.img != "") {
+        if (this.useTwemoji && emoji.img && emoji.img != '') {
           var size = isEven ? 20 : 30;
           this.context.drawImage(emoji.img, emoji.x, emoji.y, size, size);
         } else {
@@ -136,23 +160,20 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         this.context.restore();
       },
 
-      resizeWindow: function() {
-        this.canvas.width = window.innerWidth;
-        this.canvas.height = window.innerHeight;
-      },
-
       giveMeARandomEmoji: function() {
         var emoji = {}
 
         emoji.code = this._emoji[Math.floor((Math.random() * this._totalEmoji))];
-        emoji.char = twemoji.convert.fromCodePoint(emoji.code);
+        emoji.char = this._fromCodePoint(emoji.code);
 
         // 1 to window size
         emoji.x = Math.floor((Math.random() * this.canvas.width) + 1);
         emoji.y = Math.floor((Math.random() * this.canvas.height) + 1);
 
-        this._imageTransmogrifier.innerHTML = twemoji.parse(emoji.char);
-        emoji.img = this._imageTransmogrifier.childNodes[0];
+        if (this.useTwemoji && this.importedTwemoji) {
+          this._imageTransmogrifier.innerHTML = twemoji.parse(emoji.char);
+          emoji.img = this._imageTransmogrifier.childNodes[0];
+        }
 
         // I am pulling these numbers out of a hat.
         emoji.speed = Math.floor(Math.random() * 10 + 1);
@@ -160,6 +181,23 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         emoji.opacitySpeed = 0.02 * (Math.random() * 2 + 1);
 
         return emoji;
+      },
+
+      /**
+       * Create a set of emoji drops.
+       */
+      _generateDrops: function() {
+        this.dropsForDrawing = [];
+        for (var i = 0; i < this.drops; i++) {
+          var emoji = this.giveMeARandomEmoji();
+          emoji.arrayIndex = i;
+          this.dropsForDrawing.push(emoji);
+        }
+      },
+
+      _resizeWindow: function() {
+        this.canvas.width = window.innerWidth;
+        this.canvas.height = window.innerHeight;
       },
 
       // From http://www.html5rocks.com/en/tutorials/canvas/hidpi/
@@ -192,6 +230,21 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             this.context.scale(ratio, ratio);
 
         }
+      },
+
+      // From https://github.com/twitter/twemoji, so that we don't
+      // have to load twemoji unless it's being displayed.
+      _fromCodePoint: function(codepoint) {
+        var code = typeof codepoint === 'string' ?
+              parseInt(codepoint, 16) : codepoint;
+        if (code < 0x10000) {
+          return String.fromCharCode(code);
+        }
+        code -= 0x10000;
+        return String.fromCharCode(
+          0xD800 + (code >> 10),
+          0xDC00 + (code & 0x3FF)
+        );
       }
     });
 
