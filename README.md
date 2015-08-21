@@ -20,4 +20,26 @@ want to eat the performance cost, you don't have to:
   <emoji-rain use-twemoji></emoji-rain>
 ```
 
+## Usage
+Install with bower:
+```
+mkdir emoji-rain-demo && cd emoji-rain-demo
+bower install notwaldorf/emoji-rain
+```
+Drop it in a page, next to the newly created `bower_components` folder:
+```html
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>zomg</title>
+    <script src="bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+    <link rel="import" href="bower_components/emoji-rain/emoji-rain.html">
+  </head>
+  <body>
+    <emoji-rain active></emoji-rain>
+  </body>
+</html>
+```
+
 # :sparkles::umbrella::joy_cat:
