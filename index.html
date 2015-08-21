@@ -21,8 +21,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <link rel="import" href="emoji-rain.html">
 </head>
 <body>
-  <emoji-rain id="rainmaker"></emoji-rain>
-  <emoji-rain id="twemoji-rainmaker" use-twemoji></emoji-rain>
+  <emoji-rain id="rainmaker" drops="350"></emoji-rain>
+  <emoji-rain id="twemoji-rainmaker" use-twemoji drops="350"></emoji-rain>
 
   <div class="container">
     <section>
@@ -33,9 +33,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     </section>
 
     <section>
-      <button onclick="rain(this)">Make it rain!</button>
+      <button onclick="rain(this)" id="go-rain">Make it rain!</button>
       <br>or<br>
-      <button onclick="twemojiRain(this)">Make it rain twitter emoji!</button>
+      <button onclick="twemojiRain(this)" id="go-other-rain">Make it rain twitter emoji!</button>
     </section>
 
     <div id="footer">
@@ -130,6 +130,7 @@ var twemojiRainmaker = document.getElementById('twemoji-rainmaker');
 
 function rain(button) {
   twemojiRainmaker.stop();
+  document.getElementById('go-other-rain').innerHTML = "Make it rain twemoji!";;
 
   if (rainmaker.active) {
     rainmaker.stop();
@@ -142,6 +143,7 @@ function rain(button) {
 
 function twemojiRain(button) {
   rainmaker.stop();
+  document.getElementById('go-rain').innerHTML = "Make it rain!";;
 
   if (twemojiRainmaker.active) {
     twemojiRainmaker.stop();
