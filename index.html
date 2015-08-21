@@ -10,13 +10,127 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 -->
 <html>
 <head>
-
   <meta charset="utf-8">
+  <meta content='emoji-rain' name='title' />
+  <title>emoji-rain</title>
+  <meta content='width=460' name='viewport'>
+  <meta content='text/html; charset=utf-8' http-equiv='content-type' />
+  <link href='http://fonts.googleapis.com/css?family=Lato:300,400' rel='stylesheet' type='text/css'>
   <script src="../webcomponentsjs/webcomponents-lite.js"></script>
   <link rel="import" href="../polymer/polymer.html">
   <link rel="import" href="emoji-rain.html">
 </head>
 <body>
-  <emoji-rain></emoji-rain>
+  <emoji-rain id="rainmaker" number-of-drops="400"></emoji-rain>
+
+  <div class="container">
+    <section>
+      <h1>What is this even</h1>
+      <p>This is a Polymer element that you can drop on any web page and make it rain emoji.
+        Because, seriously, why wouldn't you?
+      </p>
+    </section>
+
+    <section>
+      <button onclick="toggle(this)">Make it rain!</button>
+    </section>
+
+    <div id="footer">
+      <p>made with <span class="red">❤︎</span> by <a href="https://twitter.com/notwaldorf">monica</a>.
+      find this on <a href="https://github.com/notwaldorf/meowto">github</a></p>
+    </div>
+  </div>
+
 </body>
+<style>
+
+body {
+  font-family: Helvetica, Arial, sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+  font-weight: 300;
+  background: #fff;
+  color: #535353;
+  overflow: auto;
+}
+
+.container {
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 50px;
+  overflow: auto;
+  text-align: center;
+}
+
+section {
+  margin-bottom: 50px;
+}
+
+#footer {
+  margin-top: 50px;
+  padding-top: 20px;
+  border-top: 2px solid #E91E63;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+h1, button {
+  font-family: 'Lato', 'Helvetica', Arial, sans-serif;
+  font-weight: 300;
+  font-size: 2em;
+}
+
+.code {
+  padding: 5px;
+  font-family: monospace;
+  background-color: #fde100;
+  border-radius: 3px;
+}
+
+
+#footer p {
+  text-transform: uppercase;
+  font-size: 10px;
+  letter-spacing: .2em;
+  padding-right: 6px;
+}
+
+.red {
+  color: #E91E63 !important;
+}
+
+a:link, a:visited, button {
+  color: #E91E63;
+  text-decoration: none;
+  padding-bottom: 5px;
+  padding-top: 5px;
+  background: none;
+  border: none;
+  box-shadow: none;
+  outline:none;
+}
+
+a:hover, button:hover, a:focus, button:focus {
+  background-color: #E91E63;
+  color: white;
+  border-radius: 3px;
+  text-decoration: none;
+}
+
+::selection {
+background: #F4FF81;
+}
+</style>
+<script>
+function toggle(button) {
+  var rainmaker = document.getElementById('rainmaker');
+  if (rainmaker.active) {
+    rainmaker.stop();
+    button.innerHTML = "Make it rain!";
+  } else {
+    rainmaker.start();
+    button.innerHTML = "OMG stop the rain!";
+  }
+}
+</script>
 </html>
