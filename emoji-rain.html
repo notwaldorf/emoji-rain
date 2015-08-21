@@ -37,6 +37,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           value: 250
         },
 
+        useTwemoji: {
+          type: Boolean,
+          value: false
+        },
+
         active: {
           type: Boolean,
           value: false
@@ -61,6 +66,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         this.canvas = this.$.canvas;
         this.context = this.canvas.getContext('2d');
         this.resizeWindow();
+        this._scaleCanvas();
 
         var self = this;
         window.addEventListener('resize', function() {
@@ -92,12 +98,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       animate: function() {
         var self = this;
         this.timeout = setTimeout(function() {
-          console.log("timeout");
-            self.animationFrame = window.requestAnimationFrame(self._boundAnimate);
-            self.context.clearRect(0, 0, self.canvas.width, self.canvas.height);
-            for (var i = 0; i < self.drops.length; i++) {
-              self.paintEmoji(self.drops[i]);
-            }
+          self.animationFrame = window.requestAnimationFrame(self._boundAnimate);
+          self.context.clearRect(0, 0, self.canvas.width, self.canvas.height);
+          for (var i = 0; i < self.drops.length; i++) {
+            self.paintEmoji(self.drops[i]);
+          }
         }, 1000 / 60);
       },
 
@@ -115,11 +120,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         // Mess with the font size a bit. Not too much because it slows down drawing.
         if (emoji.arrayIndex % 2)
-          this.context.font = '30px sans-serif';
+          this.context.font = '20px serif';
         else
-          this.context.font = '20px sans-serif';
+          this.context.font = '30px serif';
 
-        this.context.fillStyle = 'rgba(0,255,255, ' + emoji.opacity + ')';
+        this.context.fillStyle = 'rgba(0,0,0, ' + emoji.opacity + ')';
         this.context.fillText(emoji.char, emoji.x, emoji.y);
       },
 
@@ -147,6 +152,38 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         emoji.opacitySpeed = 0.02 * (Math.random() * 4 + 1);
 
         return emoji;
+      },
+
+      // From http://www.html5rocks.com/en/tutorials/canvas/hidpi/
+      _scaleCanvas: function() {
+        // finally query the various pixel ratios
+        var devicePixelRatio = window.devicePixelRatio || 1;
+        var backingStoreRatio = this.context.webkitBackingStorePixelRatio ||
+                            this.context.mozBackingStorePixelRatio ||
+                            this.context.msBackingStorePixelRatio ||
+                            this.context.oBackingStorePixelRatio ||
+                            this.context.backingStorePixelRatio || 1;
+
+        var ratio = devicePixelRatio / backingStoreRatio;
+
+        // upscale the canvas if the two ratios don't match
+        if (devicePixelRatio !== backingStoreRatio) {
+
+            var oldWidth = this.canvas.width;
+            var oldHeight = this.canvas.height;
+
+            this.canvas.width = oldWidth * ratio;
+            this.canvas.height = oldHeight * ratio;
+
+            this.canvas.style.width = oldWidth + 'px';
+            this.canvas.style.height = oldHeight + 'px';
+
+            // now scale the context to counter
+            // the fact that we've manually scaled
+            // our canvas element
+            this.context.scale(ratio, ratio);
+
+        }
       }
     });
 
