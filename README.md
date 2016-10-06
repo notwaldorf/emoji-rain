@@ -9,8 +9,21 @@ attribute determines whether the emoji are raining, but you can also manually
 `start()` and `stop()` the rain.
 
 Example:
+<!---
+```
+<custom-element-demo>
+  <template>
+    <script src="../webcomponentsjs/webcomponents-lite.js"></script>
+    <link rel="import" href="emoji-rain.html">
+    <div style="height: 200px">
+      <next-code-block></next-code-block>
+    </div
+  </template>
+</custom-element-demo>
+```
+-->
 ```html
-  <emoji-rain drops="100" active></emoji-rain>
+<emoji-rain drops="50" active></emoji-rain>
 ```
 
 💸️ Optionally, you can also use the Twitter emoji instead of the native ones.
