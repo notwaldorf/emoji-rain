@@ -6,6 +6,7 @@
   "author": [
     "Monica Dinculescu <noms@google.com>"
   ],
+  "license": "MIT"
   "keywords": [
     "web-components",
     "polymer",
