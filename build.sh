@@ -1,3 +1,5 @@
+## note: you should have run bower install before running this.
+
 org=${1:-"notwaldorf"}
 repo=${2:-"emoji-rain"}
 
