@@ -42,7 +42,7 @@ rm -rf components/$repo/demo
 mv demo components/$repo/
 
 # redirect by default to the component folder
-echo "<META http-equiv="refresh" content=\"0;URL=components/$repo/\">" >index.html
+echo "<META http-equiv="refresh" content=\"0;URL=components/$repo/demo/\">" >index.html
 
 # send it all to github
 git add -A .
