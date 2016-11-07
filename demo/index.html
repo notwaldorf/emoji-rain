@@ -109,20 +109,20 @@ background: #F4FF81;
 </style>
 
 <script>
-var rainmaker = document.getElementById('rainmaker');
+  var rainmaker = document.getElementById('rainmaker');
 
-function rain(button) {
-  if (rainmaker.active) {
-    rainmaker.stop();
-    button.innerHTML = "Make it rain!";
-  } else {
-    rainmaker.start();
-    button.innerHTML = "OMG stop the rain!";
+  function rain(button) {
+    if (rainmaker.active) {
+      rainmaker.stop();
+      button.innerHTML = "Make it rain!";
+    } else {
+      rainmaker.start();
+      button.innerHTML = "OMG stop the rain!";
+    }
   }
-}
 
-function twemojiChanged(event) {
-  rainmaker.useTwemoji = event.target.checked;
-}
+  function twemojiChanged(event) {
+    rainmaker.useTwemoji = event.target.checked;
+  }
 </script>
 </html>
