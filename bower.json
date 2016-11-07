@@ -1,6 +1,6 @@
 {
   "name": "emoji-rain",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "A polymer element that makes it rain emoji",
   "main": "emoji-rain.html",
   "author": [
