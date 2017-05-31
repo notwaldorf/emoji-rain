@@ -24,5 +24,8 @@
     "webcomponentsjs": "webcomponents/webcomponentsjs#^0.7.0",
     "test-fixture": "polymerelements/test-fixture#^1.0.0",
     "web-component-tester": "*"
+  },
+  "resolutions": {
+    "test-fixture": "^3.0.0-rc.1"
   }
 }
