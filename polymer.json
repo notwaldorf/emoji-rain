@@ -1,0 +1,17 @@
+{
+  "entrypoint": "index.html",
+  "shell": "emoji-rain.html",
+  "fragments": [
+  ],
+  "sources": [
+  ],
+  "extraDependencies": [
+    "manifest.json",
+    "bower_components/webcomponentsjs/*"
+  ],
+  "lint": {
+    "rules": ["polymer-2-hybrid"]
+  },
+  "builds": [ {
+    }]
+}
