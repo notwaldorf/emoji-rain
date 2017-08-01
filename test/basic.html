@@ -3,10 +3,11 @@
 <head>
   <title>emoji-rain tests</title>
 
-  <script src="../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
-  <script src="../bower_components/web-component-tester/browser.js"></script>
-  <script src="../bower_components/test-fixture/test-fixture-mocha.js"></script>
-  <link rel="import" href="../bower_components/test-fixture/test-fixture.html">
+  <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
+  <script src="../../web-component-tester/browser.js"></script>
+  <script src="../../test-fixture/test-fixture-mocha.js"></script>
+  <link rel="import" href="../../polymer/polymer.html">
+  <link rel="import" href="../../test-fixture/test-fixture.html">
   <link rel="import" href="../emoji-rain.html">
 </head>
 <body>
@@ -89,7 +90,7 @@
         rain.useTwemoji = true;
       });
 
-      test('raining continues after loading twemoji', function() {
+      test('raining continues after loading twemoji', function(done) {
         var rain = fixture('basic');
         rain.start();
         expect(rain.useTwemoji).to.be.eql(false);
@@ -100,7 +101,7 @@
             expect(rain.useTwemoji).to.be.eql(true);
             expect(rain.importedTwemoji).to.be.eql(true);
             expect(rain.active).to.be.eql(true);
-            //done(); (thrown error - why?)
+            done();
           }, 1);
         });
         rain.useTwemoji = true;
