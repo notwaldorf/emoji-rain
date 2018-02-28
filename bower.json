@@ -22,15 +22,8 @@
   },
   "devDependencies": {
     "webcomponentsjs": "webcomponents/webcomponentsjs#^1.0.0",
-    "test-fixture": "polymerelements/test-fixture#^1.0.0",
-    "iron-component-page": "PolymerElements/iron-component-page#^3.0.1",
-    "web-component-tester": "*"
-  },
-  "resolutions": {
-    "test-fixture": "^3.0.0-rc.1",
-    "webcomponentsjs": "^1.0.0",
-    "polymer": "^2.0.0",
-    "hydrolysis": "^1.18",
-    "iron-doc-viewer": "^3.0.0"
+    "test-fixture": "PolymerElements/test-fixture#^3.0.0-rc.1",
+    "iron-component-page": "PolymerElements/iron-component-page#^2.0.0",
+    "web-component-tester": "^6.0.0"
   }
 }

@@ -2,12 +2,8 @@
 <html>
 <head>
   <title>emoji-rain tests</title>
-
   <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
   <script src="../../web-component-tester/browser.js"></script>
-  <script src="../../test-fixture/test-fixture-mocha.js"></script>
-  <link rel="import" href="../../polymer/polymer.html">
-  <link rel="import" href="../../test-fixture/test-fixture.html">
   <link rel="import" href="../emoji-rain.html">
 </head>
 <body>
@@ -41,7 +37,7 @@
         });
         rain.start();
       });
-      
+
       test('it can stop raining', function(done) {
         var rain = fixture('basic');
         rain.addEventListener('emoji-rain-start', function() {
