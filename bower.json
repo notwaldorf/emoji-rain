@@ -1,0 +1,29 @@
+{
+  "name": "emoji-rain",
+  "version": "2.0.0",
+  "description": "A polymer element that makes it rain emoji",
+  "main": "emoji-rain.html",
+  "author": [
+    "Monica Dinculescu <noms@google.com>"
+  ],
+  "license": "MIT",
+  "keywords": [
+    "web-components",
+    "polymer",
+    "emoji",
+    "rain"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/notwaldorf/emoji-rain.git"
+  },
+  "dependencies": {
+    "polymer": "Polymer/polymer#^2.0.0"
+  },
+  "devDependencies": {
+    "webcomponentsjs": "webcomponents/webcomponentsjs#^1.0.0",
+    "test-fixture": "PolymerElements/test-fixture#^3.0.0-rc.1",
+    "iron-component-page": "PolymerElements/iron-component-page#^2.0.0",
+    "web-component-tester": "^6.0.0"
+  }
+}
