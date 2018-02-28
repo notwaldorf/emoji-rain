@@ -90,7 +90,7 @@
         rain.useTwemoji = true;
       });
 
-      test('raining continues after loading twemoji', function() {
+      test('raining continues after loading twemoji', function(done) {
         var rain = fixture('basic');
         rain.start();
         expect(rain.useTwemoji).to.be.eql(false);
