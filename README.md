@@ -1,5 +1,8 @@
 # :sparkles: emoji-rain :sparkles:
 
+[![Published on Vaadin  Directory](https://img.shields.io/badge/Vaadin%20Directory-published-00b4f0.svg)](https://vaadin.com/directory/component/notwaldorfemoji-rain)
+[![Stars on vaadin.com/directory](https://img.shields.io/vaadin-directory/star/notwaldorfemoji-rain.svg)](https://vaadin.com/directory/component/notwaldorfemoji-rain)
+
 `<emoji-rain>` is a Polymer element that makes it rain emoji on any page. Because it can.
 
 <img width="500" alt="emoji rain" src="https://cloud.githubusercontent.com/assets/1369170/9401459/86c67a76-4784-11e5-8716-3300c96a7e20.gif">
